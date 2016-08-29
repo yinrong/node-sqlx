@@ -3,6 +3,7 @@ database driver with extended features.
 
 ## database list
 * mysql
+* extend to use any database
 
 ## feature list
 * changelog/oplog
@@ -70,10 +71,10 @@ db.delete(
   })
 ```
 
-### extend method
+### replace method
 ```javascript
 const request = require('request')
-client.extend('insert', 'table1', function(table, set, callback) {
+client.replace('insert', 'table1', function(table, set, callback) {
   var p = {
     url: 'http://example.com/table/insert',
     method: 'post',
