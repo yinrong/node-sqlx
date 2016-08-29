@@ -3,7 +3,7 @@ database driver with extended features.
 
 ## database list
 * mysql
-* extend to use any database
+* define custom function to use any database or service
 
 ## feature list
 * changelog/oplog
@@ -11,70 +11,62 @@ database driver with extended features.
 
 ## interface
 
-### init
+
+### overall
 ```javascript
-const mysql = require('mysql')
-const pool = mysql.createPool({
-    connectionLimit: 1,
-    host: '127.0.0.1',
-    user: 'root',
-    password: '',
-    debug: ['ComQueryPacket'],
-  })
-
 const sqlx = require('sqlx')
-const client = sqlx.createClient({
-  pool: pool,
-})
+const client = sqlx.createClient()
 
+// client.define(table, method, config_or_function)
+client.define(['table1'], ['insert', 'update'], config1  )
+client.define(['table2'], 'all'               , config2  )
+client.define('table3'  , 'insert'            , function1)
+client.define('table3'  , 'update'            , function2)
+client.define('table4'  , 'insert'            , function3)
+// client.define(...)
+// client.define(...)
+client.define('all', 'all', config3) // match all other tables
 
 // for changelog
 var operator_info = {
   user: '101,23',
 }
 
-client.getConnection(operator_info, function(err, db) {
-  assert(!err, err)
-  // db.insert
-  // db.update
-  // ...
-  db.release()
+client.getConnection(operator_info, function(err, conn) {
+  if (err) throw err
+  
+  conn.insert(...)
+  conn.update(...)
+  // all operations will be logged
+  
+  conn.release()
 })
 ```
 
-### database methods
+### config_or_function
 ```javascript
-db.insert(
-  /* table */ 'table1',
-  /* set   */ {field1: 20},
-  function(err, rows, info) {
-  })
+var config1 = {
+    type: 'mysql',
+    config: {
+      host: '1.1.1.1',
+      database: 'db1'
+      user: 'root',
+      password: '',
+    },
+  }
 
-db.update(
-  /* table */ 'table1',
-  /* set   */ {field1: 20},
-  /* where */ {field1: 10},
-  function(err, rows, info) {
-  })
+var config2 = {
+    type: 'mysql',
+    config: {
+      host: '2.2.2.2',
+      database: 'db2'
+      user: 'root',
+      password: '',
+    },
+  }
 
-db.select(
-  /* table */ 'table1',
-  /* field */ ['field1', 'field2'],
-  /* where */ {field1: 10},
-  function(err, rows, info) {
-  })
-
-db.delete(
-  /* table */ 'table1',
-  /* where */ {field1: 10},
-  function(err, rows, info) {
-  })
-```
-
-### replace method
-```javascript
-const request = require('request')
-client.replace('insert', 'table1', function(table, set, callback) {
+function function1(table, set, callback) {
+  const request = require('request')
   var p = {
     url: 'http://example.com/table/insert',
     method: 'post',
@@ -85,5 +77,42 @@ client.replace('insert', 'table1', function(table, set, callback) {
     // callback must be called with 3 parameters! callback(err, rows, info)
     callback(err, body.rows, null)
   })
-})
+}
 ```
+
+
+### method
+```javascript
+conn.queryReadonly(
+  /* custom sql */ 'select ... join ...',
+  function(err, rows, info) {
+  })
+
+conn.insert(
+  /* table */ 'table1',
+  /* set   */ {field1: 20},
+  function(err, rows, info) {
+  })
+
+conn.update(
+  /* table */ 'table2',
+  /* set   */ {field1: 20},
+  /* where */ {field1: 10},
+  function(err, rows, info) {
+  })
+
+conn.select(
+  /* table */ 'table3',
+  /* field */ ['field1', 'field2'],
+  /* where */ {field1: 10},
+  function(err, rows, info) {
+  })
+
+conn.delete(
+  /* table */ 'table4',
+  /* where */ {field1: 10},
+  function(err, rows, info) {
+  })
+```
+
+
