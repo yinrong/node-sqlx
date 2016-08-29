@@ -69,3 +69,20 @@ db.delete(
   function(err, rows, info) {
   })
 ```
+
+### extend method
+```javascript
+const request = require('request')
+client.extend('insert', 'table1', function(table, set, callback) {
+  var p = {
+    url: 'http://example.com/table/insert',
+    method: 'post',
+    json: true,
+    body: set,
+  }
+  request(p, function(err, res, body) {
+    // callback must be called with 3 parameters! callback(err, rows, info)
+    callback(err, body.rows, null)
+  })
+})
+```
