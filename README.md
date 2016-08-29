@@ -1,2 +1,9 @@
-# node-mysql-safe
-mysql driver with extended features like database changelog/oplog, connection auto release.
+# sqlx
+database driver with extended features.
+
+## database list
+* mysql
+
+## feature list
+* changelog/oplog
+* connection auto release.
