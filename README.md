@@ -19,13 +19,13 @@ const client = sqlx.createClient()
 
 // client.define(table, method, config_or_function)
 client.define(['table1'], ['insert', 'update'], config1  )
-client.define(['table2'], 'all'               , config2  )
+client.define(['table2'], '*'                 , config2  )
 client.define('table3'  , 'insert'            , function1)
 client.define('table3'  , 'update'            , function2)
 client.define('table4'  , 'insert'            , function3)
 // client.define(...)
 // client.define(...)
-client.define('all', 'all', config3) // match all other tables
+client.define('*', '*', config3) // match all other tables
 
 // for changelog
 var operator_info = {

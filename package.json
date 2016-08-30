@@ -1,0 +1,38 @@
+{
+  "name": "sqlx",
+  "version": "1.0.0",
+  "description": "database driver with extended features like mysql changelog/oplog, connection auto release.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yinrong/node-sqlx.git"
+  },
+  "keywords": [
+    "mysql",
+    "changelog",
+    "oplog",
+    "connection",
+    "auto",
+    "release"
+  ],
+  "author": "yinrong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yinrong/node-sqlx/issues"
+  },
+  "homepage": "https://github.com/yinrong/node-sqlx#readme",
+  "dependencies": {
+    "async": "^2.0.1",
+    "mysql": "^2.11.1",
+    "squel": "^5.4.2"
+  },
+  "devDependencies": {
+    "mocha": "^3.0.2"
+  }
+}
