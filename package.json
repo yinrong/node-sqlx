@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test"
+    "test": "istanbul cover --dir .cov _mocha test; echo .cov/lcov-report/index.html"
   },
   "repository": {
     "type": "git",
