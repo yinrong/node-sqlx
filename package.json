@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node test"
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
@@ -29,10 +29,9 @@
   "homepage": "https://github.com/yinrong/node-sqlx#readme",
   "dependencies": {
     "async": "^2.0.1",
+    "debug": "^2.2.0",
     "mysql": "^2.11.1",
     "squel": "^5.4.2"
   },
-  "devDependencies": {
-    "mocha": "^3.0.2"
-  }
+  "devDependencies": {}
 }

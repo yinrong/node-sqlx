@@ -1,0 +1,5 @@
+drop database if exists sqlx_mysql;
+create database sqlx_mysql;
+use sqlx_mysql;
+create table table1(id integer, a integer);
+create table tableX(id integer, a integer);
