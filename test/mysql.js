@@ -1,10 +1,10 @@
 describe('mysql', function() {
 
-before(function() {
+beforeEach(function() {
   child_process.execSync('mysql -uroot < test/mysql_initdb.txt')
 })
 
-it('basic', function(done) {
+it('table routing', function(done) {
   const client = sqlx.createClient()
   client.define(['table1'], ['insert', 'update'], MYSQL_CONFIG_1)
   client.define(['table2'], '*'                 , MYSQL_CONFIG_1)
@@ -34,6 +34,41 @@ it('basic', function(done) {
 })
 
 
+it('where in select', function(done) {
+  const client = sqlx.createClient()
+  client.define('*', '*', MYSQL_CONFIG_1)
+  const conn = client.getConnection(OPERATER_INFO_1)
+
+  async.waterfall([
+  function(next) {
+    conn.insert(
+      'table1',
+      [
+        {a:1, b:21},
+        {a:2, b:22},
+        {a:3, b:23},
+        {a:3, b:123},
+      ],
+      next)
+  },
+  function(rows, info, next) {
+    conn.select('table1', '*', {a: 2}, next)
+  },
+  function(rows, info, next) {
+    assert.equal(rows.length, 1)
+    assert.equal(rows[0].b, 22)
+    conn.select('table1', '*', {$and: {a: 3, b: 123}}, next)
+  },
+  function(rows, info, next) {
+    assert.equal(rows.length, 1)
+    conn.release()
+    done()
+  },
+  ], function(err) {
+    throw err
+  })
+})
+
 })
 
 const assert = require('assert')
@@ -47,7 +82,7 @@ const MYSQL_CONFIG_1 = {
     host: '127.0.0.1',
     user: 'root',
     password: '',
-    //debug: ['ComQueryPacket'],
+    // debug: ['ComQueryPacket'],
     database: 'sqlx_mysql',
   } }
 const OPERATER_INFO_1 = {

@@ -30,6 +30,7 @@
   "dependencies": {
     "async": "^2.0.1",
     "debug": "^2.2.0",
+    "mongo-sql": "^2.7.5",
     "mysql": "^2.11.1",
     "squel": "^5.4.2"
   },
