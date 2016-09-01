@@ -69,6 +69,44 @@ it('where in select', function(done) {
   })
 })
 
+
+it('where in update', function(done) {
+  const client = sqlx.createClient()
+  client.define('*', '*', MYSQL_CONFIG_1)
+  const conn = client.getConnection(OPERATER_INFO_1)
+
+  async.waterfall([
+  function(next) {
+    conn.insert(
+      'table1',
+      [
+        {a:1, b:21},
+        {a:2, b:22},
+        {a:3, b:23},
+        {a:3, b:123},
+      ],
+      next)
+  },
+  function(rows, info, next) {
+    conn.update('table1', {b:1}, {a:3}, next)
+  },
+  function(result, info, next) {
+    assert.equal(result.affectedRows, 2)
+    assert.equal(result.changedRows, 2)
+    conn.select('table1', '*', {a:3}, next)
+  },
+  function(rows, info, next) {
+    assert.equal(rows.length, 2)
+    assert.equal(rows[0].b, 1)
+    assert.equal(rows[1].b, 1)
+    conn.release()
+    done()
+  },
+  ], function(err) {
+    throw err
+  })
+})
+
 })
 
 const assert = require('assert')
