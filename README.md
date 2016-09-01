@@ -23,24 +23,21 @@ client.define(['table2'], '*'                 , config2  )
 client.define('table3'  , 'insert'            , function1)
 client.define('table3'  , 'update'            , function2)
 client.define('table4'  , 'insert'            , function3)
-// client.define(...)
-// client.define(...)
 client.define('*', '*', config3) // match all other tables
 
 // for changelog
 var operator_info = {
   user: '101,23',
 }
+const conn = client.createConnection(operator_info)
 
-client.getConnection(operator_info, function(err, conn) {
+conn.insert('table7', {a:1, b:2}, function(err, rows, info) {
   if (err) throw err
-  
-  conn.insert(...)
-  conn.update(...)
-  // all operations will be logged
-  
+  console.log(rows, info)
+
   conn.release()
 })
+
 ```
 
 ### config_or_function

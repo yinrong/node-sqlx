@@ -1,6 +1,6 @@
 describe('default', function() {
 
-it('', function(done) {
+it('basic', function(done) {
   const client = sqlx.createClient()
   client.define(['table1'], ['insert', 'update'], function1)
   client.define(['table2'], '*'                 , function2)
@@ -21,29 +21,15 @@ it('', function(done) {
     user: '101,23',
   }
 
-  var conn
-  async.waterfall([
-  function(next) {
-    client.getConnection(operator_info, next)
-  },
-  function(conn_, next) {
-    conn = conn_
-    conn.insert('table1')
-    conn.update('table1')
-    assert.equal(n_called, 2)
-    conn.update('tableX')
-    conn.insert('tableX')
-    assert.equal(n_called, 4)
-    conn.release()
-    done()
-  },
-  function(next) {
-  },
-  function(next) {
-  },
-  ], function(err) {
-    throw err
-  })
+  const conn = client.createConnection(operator_info)
+  conn.insert('table1')
+  conn.update('table1')
+  assert.equal(n_called, 2)
+  conn.update('tableX')
+  conn.insert('tableX')
+  assert.equal(n_called, 4)
+  conn.release()
+  done()
 })
 
 

@@ -1,35 +1,21 @@
 describe('mysql', function() {
 
-it('', function(done) {
+before(function() {
   child_process.execSync('mysql -uroot < test/mysql_initdb.txt')
+})
+
+it('basic', function(done) {
   const client = sqlx.createClient()
-  const config1 = { type: 'mysql',
-                    config: {
-                      connectionLimit: 10,
-                      host: '127.0.0.1',
-                      user: 'root',
-                      password: '',
-                      //debug: ['ComQueryPacket'],
-                      database: 'sqlx_mysql',
-                    } }
-  client.define(['table1'], ['insert', 'update'], config1)
-  client.define(['table2'], '*'                 , config1)
-  client.define('table3'  , 'insert'            , config1)
-  client.define('table3'  , 'update'            , config1)
-  client.define('table4'  , 'insert'            , config1)
-  client.define('*', '*', config1)
+  client.define(['table1'], ['insert', 'update'], MYSQL_CONFIG_1)
+  client.define(['table2'], '*'                 , MYSQL_CONFIG_1)
+  client.define('table3'  , 'insert'            , MYSQL_CONFIG_1)
+  client.define('table3'  , 'update'            , MYSQL_CONFIG_1)
+  client.define('table4'  , 'insert'            , MYSQL_CONFIG_1)
+  client.define('*', '*', MYSQL_CONFIG_1)
 
-  var operator_info = {
-    user: '101,23',
-  }
-
-  var conn
+  const conn = client.createConnection(OPERATER_INFO_1)
   async.waterfall([
   function(next) {
-    client.getConnection(operator_info, next)
-  },
-  function(conn_, next) {
-    conn = conn_
     conn.insert('table1', {a:1}, next)
   },
   function(rows, info, next) {
@@ -41,10 +27,6 @@ it('', function(done) {
   function(rows, info, next) {
     conn.release()
     done()
-  },
-  function(next) {
-  },
-  function(next) {
   },
   ], function(err) {
     throw err
@@ -58,3 +40,17 @@ const assert = require('assert')
 const async = require('async')
 const sqlx = require('..')
 const child_process = require('child_process')
+const MYSQL_CONFIG_1 = {
+  type: 'mysql',
+  config: {
+    connectionLimit: 10,
+    host: '127.0.0.1',
+    user: 'root',
+    password: '',
+    //debug: ['ComQueryPacket'],
+    database: 'sqlx_mysql',
+  } }
+const OPERATER_INFO_1 = {
+    user: '101,23',
+  }
+
