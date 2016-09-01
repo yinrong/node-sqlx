@@ -107,6 +107,37 @@ it('where in update', function(done) {
   })
 })
 
+
+it('where in delete', function(done) {
+  const client = sqlx.createClient()
+  client.define('*', '*', MYSQL_CONFIG_1)
+  const conn = client.getConnection(OPERATER_INFO_1)
+
+  async.waterfall([
+  function(next) {
+    conn.insert(
+      'table1',
+      [
+        {a:1, b:21},
+        {a:2, b:22},
+        {a:3, b:23},
+        {a:3, b:123},
+      ],
+      next)
+  },
+  function(rows, info, next) {
+    conn.delete('table1', {a:3}, next)
+  },
+  function(result, info, next) {
+    assert.equal(result.affectedRows, 2)
+    conn.release()
+    done()
+  },
+  ], function(err) {
+    throw err
+  })
+})
+
 })
 
 const assert = require('assert')
