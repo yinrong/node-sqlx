@@ -13,7 +13,7 @@ it('basic', function(done) {
   client.define('table4'  , 'insert'            , MYSQL_CONFIG_1)
   client.define('*', '*', MYSQL_CONFIG_1)
 
-  const conn = client.createConnection(OPERATER_INFO_1)
+  const conn = client.getConenction(OPERATER_INFO_1)
   async.waterfall([
   function(next) {
     conn.insert('table1', {a:1}, next)
