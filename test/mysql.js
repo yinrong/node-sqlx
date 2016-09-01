@@ -25,6 +25,25 @@ it('table routing', function(done) {
     conn.insert('tableX', {a:3}, next)
   },
   function(rows, info, next) {
+    conn.queryReadonly('select * from table1', next)
+  },
+  function(rows, info, next) {
+    assert(rows.length > 0)
+    conn.queryReadonly('update table set a=1', function(err) {
+      assert(err.toString().match(/not allowed/))
+      next(null, null, null)
+    })
+  },
+  function(rows, info, next) {
+    conn.delete('table1', {a:3}, function(err) {
+      assert(err.toString().match(/not defined/))
+      next(null, null, null)
+    })
+  },
+  function(rows, info, next) {
+    assert.throws(function() {
+      conn.delete('table1', {a:3})
+    })
     conn.release()
     done()
   },

@@ -22,11 +22,11 @@ it('basic', function(done) {
   }
 
   const conn = client.getConnection(operator_info)
-  conn.insert('table1')
-  conn.update('table1')
+  conn.insert('table1', function(){})
+  conn.update('table1', function(){})
   assert.equal(n_called, 2)
-  conn.update('tableX')
-  conn.insert('tableX')
+  conn.update('tableX', function(){})
+  conn.insert('tableX', function(){})
   assert.equal(n_called, 4)
   conn.release()
   done()
