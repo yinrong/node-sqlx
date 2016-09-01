@@ -29,7 +29,7 @@ client.define('*', '*', config3) // match all other tables
 var operator_info = {
   user: '101,23',
 }
-const conn = client.getConenction(operator_info)
+const conn = client.getConnection(operator_info)
 
 conn.insert('table7', {a:1, b:2}, function(err, rows, info) {
   if (err) throw err

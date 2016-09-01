@@ -21,7 +21,7 @@ it('basic', function(done) {
     user: '101,23',
   }
 
-  const conn = client.getConenction(operator_info)
+  const conn = client.getConnection(operator_info)
   conn.insert('table1')
   conn.update('table1')
   assert.equal(n_called, 2)
