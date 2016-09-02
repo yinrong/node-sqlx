@@ -6,12 +6,12 @@ beforeEach(function() {
 
 it('table routing', function(done) {
   const client = sqlx.createClient()
-  client.define(['table1'], ['insert', 'update'], MYSQL_CONFIG_1)
-  client.define(['table2'], '*'                 , MYSQL_CONFIG_1)
-  client.define('table3'  , 'insert'            , MYSQL_CONFIG_1)
-  client.define('table3'  , 'update'            , MYSQL_CONFIG_1)
-  client.define('table4'  , 'insert'            , MYSQL_CONFIG_1)
-  client.define('*', '*', MYSQL_CONFIG_1)
+  MYSQL_CONFIG_1.config.connectionLimit = 5
+  client.define(['table1'], MYSQL_CONFIG_1)
+  client.define(['table2'], MYSQL_CONFIG_1)
+  client.define('table3'  , MYSQL_CONFIG_1)
+  client.define('table4'  , MYSQL_CONFIG_1)
+  client.define('*', MYSQL_CONFIG_1)
 
   const conn = client.getConnection(OPERATER_INFO_1)
   async.waterfall([
@@ -35,12 +35,6 @@ it('table routing', function(done) {
     })
   },
   function(rows, info, next) {
-    conn.delete('table1', {a:3}, function(err) {
-      assert(err.toString().match(/not defined/))
-      next(null, null, null)
-    })
-  },
-  function(rows, info, next) {
     assert.throws(function() {
       conn.delete('table1', {a:3})
     })
@@ -55,7 +49,7 @@ it('table routing', function(done) {
 
 it('where in select', function(done) {
   const client = sqlx.createClient()
-  client.define('*', '*', MYSQL_CONFIG_1)
+  client.define('*', MYSQL_CONFIG_1)
   const conn = client.getConnection(OPERATER_INFO_1)
 
   async.waterfall([
@@ -91,7 +85,7 @@ it('where in select', function(done) {
 
 it('where in update', function(done) {
   const client = sqlx.createClient()
-  client.define('*', '*', MYSQL_CONFIG_1)
+  client.define('*', MYSQL_CONFIG_1)
   const conn = client.getConnection(OPERATER_INFO_1)
 
   async.waterfall([
@@ -129,7 +123,8 @@ it('where in update', function(done) {
 
 it('where in delete', function(done) {
   const client = sqlx.createClient()
-  client.define('*', '*', MYSQL_CONFIG_1)
+  MYSQL_CONFIG_1.config.connectionLimit = 1
+  client.define('*', MYSQL_CONFIG_1)
   const conn = client.getConnection(OPERATER_INFO_1)
 
   async.waterfall([
@@ -163,14 +158,14 @@ const assert = require('assert')
 const async = require('async')
 const sqlx = require('..')
 const child_process = require('child_process')
-const MYSQL_CONFIG_1 = {
+var MYSQL_CONFIG_1 = {
   type: 'mysql',
   config: {
-    connectionLimit: 10,
+    connectionLimit: 1, // change in every test case
     host: '127.0.0.1',
     user: 'root',
     password: '',
-    // debug: ['ComQueryPacket'],
+    //debug: ['ComQueryPacket'],
     database: 'sqlx_mysql',
   } }
 const OPERATER_INFO_1 = {

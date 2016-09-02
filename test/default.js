@@ -2,12 +2,11 @@ describe('default', function() {
 
 it('basic', function(done) {
   const client = sqlx.createClient()
-  client.define(['table1'], ['insert', 'update'], function1)
-  client.define(['table2'], '*'                 , function2)
-  client.define('table3'  , 'insert'            , function3)
-  client.define('table3'  , 'update'            , function4)
-  client.define('table4'  , 'insert'            , function5)
-  client.define('*', '*', functionX)
+  client.define(['table1'], function1)
+  client.define(['table2'], function2)
+  client.define('table3'  , function3)
+  client.define('table4'  , function5)
+  client.define('*', functionX)
 
   var n_called = 0
   function function1() { n_called++ }
