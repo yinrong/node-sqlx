@@ -113,3 +113,12 @@ conn.delete(
 ```
 
 
+### where
+where is mongo-like JSON object, examples:
+
+```javascript
+// a == 1 || b == 2
+{ $or: {a:1, b:2} }
+```
+
+
