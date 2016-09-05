@@ -124,7 +124,6 @@ it('where in delete', function(done) {
   const client = sqlx.createClient()
   client.define('*', MYSQL_CONFIG_1)
   const conn = client.getConnection(OPERATER_INFO_1)
-
   async.waterfall([
   function(next) {
     conn.insert(
@@ -146,6 +145,46 @@ it('where in delete', function(done) {
     done()
   },
   ], function(err) {
+    throw err
+  })
+})
+
+it('release', (done) => {
+  const client = sqlx.createClient()
+  client.define('*', MYSQL_CONFIG_1)
+  var conn, conn2
+  async.waterfall([
+  (next) => {
+    var called = 0
+    conn = client.getConnection(OPERATER_INFO_1)
+    conn2 = client.getConnection(OPERATER_INFO_1)
+    conn.select('table1', '*', {}, ()=> {
+      called++
+    })
+    conn2.select('table1', '*', {}, ()=> {
+      called++
+    })
+    setTimeout(() => {
+      assert.equal(called, 1)
+      conn.release()
+      conn2.release()
+      next(null, null, null)
+    }, 1000)
+  },
+  (rows, info, next) => {
+    conn = client.getConnection(OPERATER_INFO_1)
+    conn.select('table1', '*', {}, next)
+  },
+  (rows, info, next) => {
+    conn.release()
+    conn = client.getConnection(OPERATER_INFO_1)
+    conn.select('table1', '*', {}, next)
+  },
+  (result, info, next) => {
+    conn.release()
+    done()
+  },
+  ], (err) => {
     throw err
   })
 })
