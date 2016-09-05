@@ -33,5 +33,7 @@
     "mongo-sql": "^2.7.5",
     "mysql": "^2.11.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "lodash": "^4.15.0"
+  }
 }

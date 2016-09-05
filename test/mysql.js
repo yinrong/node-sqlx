@@ -6,12 +6,11 @@ beforeEach(function() {
 
 it('table routing', function(done) {
   const client = sqlx.createClient()
-  MYSQL_CONFIG_1.config.connectionLimit = 5
-  client.define(['table1'], MYSQL_CONFIG_1)
-  client.define(['table2'], MYSQL_CONFIG_1)
-  client.define('table3'  , MYSQL_CONFIG_1)
-  client.define('table4'  , MYSQL_CONFIG_1)
-  client.define('*', MYSQL_CONFIG_1)
+  client.define(['table1'], MYSQL_CONFIG_2)
+  client.define(['table2'], MYSQL_CONFIG_2)
+  client.define('table3'  , MYSQL_CONFIG_2)
+  client.define('table4'  , MYSQL_CONFIG_2)
+  client.define('*'       , MYSQL_CONFIG_2)
 
   const conn = client.getConnection(OPERATER_INFO_1)
   async.waterfall([
@@ -123,7 +122,6 @@ it('where in update', function(done) {
 
 it('where in delete', function(done) {
   const client = sqlx.createClient()
-  MYSQL_CONFIG_1.config.connectionLimit = 1
   client.define('*', MYSQL_CONFIG_1)
   const conn = client.getConnection(OPERATER_INFO_1)
 
@@ -158,16 +156,22 @@ const assert = require('assert')
 const async = require('async')
 const sqlx = require('..')
 const child_process = require('child_process')
-var MYSQL_CONFIG_1 = {
+const _ = require('lodash')
+const MYSQL_CONFIG_1 = {
   type: 'mysql',
   config: {
-    connectionLimit: 1, // change in every test case
+    connectionLimit: 1,
     host: '127.0.0.1',
     user: 'root',
     password: '',
     //debug: ['ComQueryPacket'],
     database: 'sqlx_mysql',
   } }
+const MYSQL_CONFIG_2 = _.merge(_.cloneDeep(MYSQL_CONFIG_1), {
+  config: {
+    connectionLimit: 5,
+  },
+})
 const OPERATER_INFO_1 = {
     user: '101,23',
   }
