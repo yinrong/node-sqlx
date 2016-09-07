@@ -17,13 +17,12 @@ database driver with extended features.
 const sqlx = require('sqlx')
 const client = sqlx.createClient()
 
-// client.define(table, config_or_function)
-client.define(['table1'], config1  )
-client.define(['table2'], config2  )
-client.define('table3'  , function1)
-client.define('table3'  , function2)
-client.define('table4'  , function3)
-client.define('*'       , config3  ) // match all other tables
+// client.define(table, config_or_interface)
+client.define(['table1'], config1)
+client.define(['table2'], config2)
+client.define('logic_table3', InterfaceOne)
+client.define('logic_table4', InterfaceTwo)
+client.define('*', config3) // match all other tables
 
 // for changelog
 var operator_info = {
@@ -40,7 +39,7 @@ conn.insert('table7', {a:1, b:2}, function(err, rows, info) {
 
 ```
 
-### config_or_function
+### config_or_interface
 ```javascript
 var config1 = {
     type: 'mysql',
@@ -62,18 +61,47 @@ var config2 = {
     },
   }
 
-function function1(table, set, callback) {
-  const request = require('request')
-  var p = {
-    url: 'http://example.com/table/insert',
-    method: 'post',
-    json: true,
-    body: set,
-  }
-  request(p, function(err, res, body) {
-    // callback must be called with 3 parameters! callback(err, rows, info)
-    callback(err, body.rows, null)
-  })
+const InterfaceOne = {
+
+  // all methods are optional
+
+  initialize: function(callback) {
+
+    const client = require('some-db-drvier').createClient({
+      config1: 'value1',
+      config2: 'value2',
+    })
+    client.on('connected', callback)
+
+  },
+
+  queryReadonly: function(query_str, callback) { },
+  insert: function(table, sets, callback) { },
+  delete: function(table, where, callback) { },
+  update: function(table, sets, where, callback) { },
+  select: function(table, fields, where0, callback) { },
+  release: function() {},
+
+}
+
+const InterfaceTwo = {
+
+  select: function(table, set, callback) {
+
+    const request = require('request')
+    var p = {
+      url: 'http://example.com/table/insert',
+      method: 'post',
+      json: true,
+      body: set,
+    }
+    request(p, function(err, res, body) {
+      // callback must be called with 3 parameters! callback(err, rows, info)
+      callback(err, body.rows, null)
+    })
+
+  },
+
 }
 ```
 
