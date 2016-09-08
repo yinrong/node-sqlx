@@ -66,13 +66,14 @@ const InterfaceOne = {
   // all methods are optional
 
   initialize: function(callback) {
+    // this method is called for every table only once,
+    // and 'this' is shared between all methods
 
-    const client = require('some-db-drvier').createClient({
+    this._client = require('some-db-drvier').createClient({
       config1: 'value1',
       config2: 'value2',
     })
-    client.on('connected', callback)
-
+    this._client.on('connected', callback)
   },
 
   queryReadonly: function(query_str, callback) { },
