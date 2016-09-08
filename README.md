@@ -63,7 +63,8 @@ var config2 = {
 
 const InterfaceOne = {
 
-  // all methods are optional
+  // All methods are optional
+  // Do NOT change definition of any method
 
   initialize: function(callback) {
     // 1. 'initialize' is called whenever client.define is called
@@ -81,21 +82,24 @@ const InterfaceOne = {
   insert: function(table, sets, callback) { },
   delete: function(table, where, callback) { },
   update: function(table, sets, where, callback) { },
-  select: function(table, fields, where0, callback) { },
+  select: function(table, fields, where, callback) { },
   release: function() {},
 
 }
 
 const InterfaceTwo = {
 
-  select: function(table, set, callback) {
+  select: function(table, fields, where, callback) {
 
     const request = require('request')
     var p = {
       url: 'http://example.com/table/insert',
       method: 'post',
       json: true,
-      body: set,
+      body: {
+        field: fields,
+        query: where,
+      }
     }
     request(p, function(err, res, body) {
       // callback must be called with 3 parameters! callback(err, rows, info)
