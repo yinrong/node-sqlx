@@ -41,6 +41,29 @@ it('basic', function(done) {
   }, 300)
 })
 
+it('no initialize', function(done) {
+  const client = sqlx.createClient()
+  client.define('table1'  , {
+    insert: function(table, sets  , callback) {
+      n_called++
+      callback(null, this.x)
+    },
+  })
+
+
+  var n_called = 0
+  var operator_info = {
+    user: '101,23',
+  }
+
+  const conn = client.getConnection(operator_info)
+  conn.insert('table1', {}, () => {
+    assert.equal(n_called, 1)
+    conn.release()
+    done()
+  })
+})
+
 
 })
 
