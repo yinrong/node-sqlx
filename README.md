@@ -66,8 +66,9 @@ const InterfaceOne = {
   // all methods are optional
 
   initialize: function(callback) {
-    // this method is called for every table only once,
-    // and 'this' is shared between all methods
+    // 1. 'initialize' is called whenever client.define is called
+    // 2. 'this' is created whenever 'initialize' is called
+    // 3. 'this' is shared between all methods of InterfaceOne
 
     this._client = require('some-db-drvier').createClient({
       config1: 'value1',
