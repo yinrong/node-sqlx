@@ -189,6 +189,33 @@ it('release', (done) => {
   })
 })
 
+it('extend', function(done) {
+  const client = sqlx.createClient()
+  var config = _.cloneDeep(MYSQL_CONFIG_1)
+  var extend_method_called = 0
+  config.extend = {
+    insert: function() {
+      extend_method_called++
+      this.constructor.prototype.insert.apply(this, arguments)
+    },
+  }
+  client.define('*', config)
+  const conn = client.getConnection(OPERATER_INFO_1)
+
+  async.waterfall([
+  function(next) {
+    conn.insert( 'table1', {a:101}, next)
+  },
+  function(rows, info, next) {
+    assert.equal(extend_method_called, 1)
+    conn.release()
+    done()
+  },
+  ], function(err) {
+    throw err
+  })
+})
+
 })
 
 const assert = require('assert')

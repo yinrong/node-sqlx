@@ -156,3 +156,24 @@ where is mongo-like JSON object, examples:
 ```
 
 
+## mysql
+### extend
+```js
+var config_with_extend = {
+    type: 'mysql',
+    config: {
+      host: '1.1.1.1',
+      database: 'db1'
+      user: 'root',
+      password: '',
+    },
+    extend: {
+      insert: function(table, sets, callback) {
+        if (sets === undefined) {
+          return new Error('find some error before call sqlx')
+        }
+        this.constructor.prototype.insert.apply(this, arguments)
+      },
+    },
+  }
+```
