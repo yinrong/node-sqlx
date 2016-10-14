@@ -66,7 +66,7 @@ conn.insert('table7', {a:1, b:2}, function(err, rows, info) {
 
 ```javascript
 operator_info.actions = '*'  // allow all
-operator_info.actions = l['select']  // allow: select, queryReadonly
+operator_info.actions = ['select']  // allow: select
 ```
 
 
