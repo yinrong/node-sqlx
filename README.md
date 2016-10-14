@@ -1,4 +1,23 @@
-# sqlx
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [sqlx](#sqlx)
+  - [database list](#database-list)
+  - [feature list](#feature-list)
+  - [interface](#interface)
+    - [overall](#overall)
+    - [action whitelist: operator_info.actions](#action-whitelist-operator_infoactions)
+    - [config_or_interface](#config_or_interface)
+    - [method](#method)
+    - [where](#where)
+  - [mysql](#mysql)
+    - [extend](#extend)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+sqlx
+=========
 database driver with extended features.
 
 ## database list
@@ -27,6 +46,10 @@ client.define('*', config3) // match all other tables
 // for changelog
 var operator_info = {
   user: '101,23',
+  actions: [ // action whitelist
+    'select',
+    'update',
+  ]
 }
 const conn = client.getConnection(operator_info)
 
@@ -38,6 +61,14 @@ conn.insert('table7', {a:1, b:2}, function(err, rows, info) {
 })
 
 ```
+
+### action whitelist: operator_info.actions
+
+```javascript
+operator_info.actions = '*'  // allow all
+operator_info.actions = l['select']  // allow: select, queryReadonly
+```
+
 
 ### config_or_interface
 ```javascript
@@ -177,3 +208,5 @@ var config_with_extend = {
     },
   }
 ```
+
+

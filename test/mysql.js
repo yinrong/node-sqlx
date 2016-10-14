@@ -240,5 +240,6 @@ const MYSQL_CONFIG_2 = _.merge(_.cloneDeep(MYSQL_CONFIG_1), {
 })
 const OPERATER_INFO_1 = {
     user: '101,23',
+    actions: '*',
   }
 

@@ -25,6 +25,7 @@ it('basic', function(done) {
   var n_called = 0
   var operator_info = {
     user: '101,23',
+    actions: '*',
   }
 
   const conn = client.getConnection(operator_info)
@@ -54,6 +55,7 @@ it('no initialize', function(done) {
   var n_called = 0
   var operator_info = {
     user: '101,23',
+    actions: '*',
   }
 
   const conn = client.getConnection(operator_info)
