@@ -216,6 +216,33 @@ it('extend', function(done) {
   })
 })
 
+it('undefined in where', done => {
+  const client = sqlx.createClient()
+  client.define('*', MYSQL_CONFIG_1)
+  const conn = client.getConnection(OPERATER_INFO_1)
+
+  async.waterfall([
+  (next) => {
+    conn.update('table1', {a:1}, {a:undefined}, err => {
+      assert(err && err.toString().match(/undefined .* not allowed/))
+      next()
+    })
+  },
+  (next) => {
+    conn.delete('table1', {a: 1, b: {c: 2, d: undefined}}, err => {
+      assert(err && err.toString().match(/undefined .* not allowed/))
+      next()
+    })
+  },
+  (next) => {
+    conn.release()
+    done()
+  },
+  ], function(err) {
+    throw err
+  })
+})
+
 })
 
 const assert = require('assert')
