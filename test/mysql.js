@@ -223,6 +223,12 @@ it('undefined in where', done => {
 
   async.waterfall([
   (next) => {
+    conn.update('table1', {a:1}, {id:1, pin:'xxx'}, err => {
+      assert(err && !err.toString().match(/undefined .* not allowed/))
+      next()
+    })
+  },
+  (next) => {
     conn.update('table1', {a:1}, {a:undefined}, err => {
       assert(err && err.toString().match(/undefined .* not allowed/))
       next()
