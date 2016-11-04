@@ -34,7 +34,9 @@ database driver with extended features.
 ### overall
 ```javascript
 const sqlx = require('sqlx')
-const client = sqlx.createClient()
+const client = sqlx.createClient({
+  connection_timeout: 1000, // destroy connection on timeout
+})
 
 // client.define(table, config_or_interface)
 client.define(['table1'], config1)
