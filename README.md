@@ -36,6 +36,9 @@ database driver with extended features.
 const sqlx = require('sqlx')
 const client = sqlx.createClient({
   connection_timeout: 1000, // destroy connection on timeout
+  logAction: logAction,     // if a log function is provided,
+                            // the function will be called everytime a action 
+                            // is done with a object describing this action.
 })
 
 // client.define(table, config_or_interface)
