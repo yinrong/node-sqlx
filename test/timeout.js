@@ -25,19 +25,17 @@ beforeEach(function() {
 
 it('timeout', function(done) {
   const client = sqlx.createClient({connection_timeout: 500})
-  client.define('*', MYSQL_CONFIG_1)
+  client.define('table1'  , {
+    insert: function(table, sets, callback) {
+      setTimeout(() => {
+        callback(null, null, null)
+      }, 1000)
+    },
+  })
   const conn = client.getConnection(OPERATER_INFO_1)
   async.waterfall([
   (next) => {
     conn.insert('table1', { a: 101 }, next)
-  },
-  (_1, _2, next) => {
-    setTimeout(function() {
-      next()
-    }, 1000)
-  },
-  (next) => {
-    conn.insert('table1', { a: 102 }, next)
   },
   ], function(err) {
     assert(err.message.match(/connection timeout/))

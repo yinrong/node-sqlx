@@ -165,7 +165,7 @@ it('release', (done) => {
       called++
     })
     setTimeout(() => {
-      assert.equal(called, 1)
+      assert.equal(called, 2)
       conn.release()
       conn2.release()
       next(null, null, null)
@@ -248,7 +248,6 @@ it('undefined in where', done => {
     throw err
   })
 })
-
 })
 
 const assert = require('assert')
