@@ -61,8 +61,6 @@ const conn = client.getConnection(operator_info)
 conn.insert('table7', {a:1, b:2}, function(err, rows, info) {
   if (err) throw err
   console.log(rows, info)
-
-  conn.release()
 })
 
 ```
