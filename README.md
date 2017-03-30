@@ -173,6 +173,13 @@ conn.select(
   function(err, rows, info) {
   })
 
+conn.select(
+  /* table */ 'table3',
+  /* field */ 'field1',
+  /* where */ {field1: 10},
+  function(err, rows, info) {
+  })
+
 conn.delete(
   /* table */ 'table4',
   /* where */ {field1: 10},
