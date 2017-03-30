@@ -67,6 +67,12 @@ it('where in select', function(done) {
     conn.select('table1', '*', {a: 2}, next)
   },
   function(rows, info, next) {
+    conn.select('table1', 'b', {a: 2}, next)
+  },
+  function(rows, info, next) {
+    conn.select('table1', ['a','id'], {a: 2}, next)
+  },
+  function(rows, info, next) {
     assert.equal(rows.length, 1)
     assert.equal(rows[0].b, 22)
     conn.select('table1', '*', {$and: {a: 3, b: 123}}, next)
