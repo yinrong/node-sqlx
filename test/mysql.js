@@ -34,6 +34,16 @@ it('table routing', function(done) {
     })
   },
   function(rows, info, next) {
+    conn.selectEx('table1', 'select * from table1', next)
+  },
+  function(rows, info, next) {
+    assert(rows.length > 0)
+    conn.selectEx('table', 'update table set a=1', function(err) {
+      assert(err.toString().match(/not allowed/))
+      next(null, null, null)
+    })
+  },
+  function(rows, info, next) {
     assert.throws(function() {
       conn.delete('table1', {a:3})
     })
@@ -70,7 +80,7 @@ it('where in select', function(done) {
     conn.select('table1', 'b', {a: 2}, next)
   },
   function(rows, info, next) {
-    conn.select('table1', ['a','id'], {a: 2}, next)
+    conn.select('table1', ['a','id', 'b'], {a: 2}, next)
   },
   function(rows, info, next) {
     assert.equal(rows.length, 1)

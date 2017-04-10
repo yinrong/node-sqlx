@@ -112,7 +112,7 @@ const InterfaceOne = {
     this._client.on('connected', callback)
   },
 
-  queryReadonly: function(query_str, callback) { },
+  selectEx: function(table, query_str, callback) { },
   insert: function(table, sets, callback) { },
   delete: function(table, where, callback) { },
   update: function(table, sets, where, callback) { },
@@ -148,11 +148,6 @@ const InterfaceTwo = {
 
 ### method
 ```javascript
-conn.queryReadonly(
-  /* custom sql */ 'select ... join ...',
-  function(err, rows, info) {
-  })
-
 conn.insert(
   /* table */ 'table1',
   /* set   */ {field1: 20},
@@ -185,6 +180,13 @@ conn.delete(
   /* where */ {field1: 10},
   function(err, rows, info) {
   })
+
+conn.selectEx( // not recommended
+  /* table */ 'table5',
+  /* custom sql */ 'select * from table5 order by id',
+  function(err, rows, info) {
+  })
+
 ```
 
 
