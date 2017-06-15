@@ -150,7 +150,8 @@ const InterfaceTwo = {
 ```javascript
 conn.selectEx(
   /* table */ 'table0',
-  /* custom sql */ 'select ... join ...',
+  /* custom sql */ 'select ... join ...where field1 = ? and field2 = ?',
+  /* where */ [1,2]
   function(err, rows, info) {
   })
 

@@ -264,6 +264,57 @@ it('undefined in where', done => {
     throw err
   })
 })
+
+it('selectEx test', (done) => {
+  const client = sqlx.createClient()
+  client.define('*', MYSQL_CONFIG_1)
+  const conn = client.getConnection(OPERATER_INFO_1)
+
+  async.waterfall([
+  (next) => {
+    conn.insert(
+      'table1',
+      [
+        {a:1, b:21},
+        {a:2, b:22},
+        {a:3, b:23},
+        {a:3, b:123},
+      ],
+      next)
+  },
+  (rows, info, next) => {
+    conn.selectEx('table1', 'select * from table1 where a = ?', [2], next)
+  },
+  (rows, info, next) => {
+    assert.equal(rows.length, 1)
+    assert.equal(rows[0].b, 22)
+    conn.insert(
+      'tableX',
+      [
+        {a:1},
+        {a:2},
+        {a:2},
+      ],
+      next)
+  },
+  (rows, info, next) => {
+    conn.selectEx('tableX', 'select * from tableX', next)
+  },
+  (rows, info, next) => {
+    assert.equal(rows.length, 3)
+    conn.selectEx(
+      'table1',
+      'select * from table1 left join tableX on table1.a = tableX.a',next)
+  },
+  (rows, info, next) => {
+    assert.equal(rows.length, 5)
+    conn.release()
+    done()
+  },
+  ], function(err) {
+    throw err
+  })
+})
 })
 
 const assert = require('assert')
