@@ -315,6 +315,46 @@ it('selectEx test', (done) => {
     throw err
   })
 })
+
+it('params secure test', done => {
+  const client = sqlx.createClient()
+  client.define('*', MYSQL_CONFIG_1)
+  const conn = client.getConnection(OPERATER_INFO_1)
+
+  async.waterfall([
+  (next) => {
+    conn.insert('table1', [{a: '$'}], err => {
+      assert(err && err.toString().match(/invalid sql/))
+      next()
+    })
+  },
+  (next) => {
+    conn.insert('table1', [{a: 1},{a:2}], next)
+  },
+  (rows, info, next) => {
+   conn.update('table1', {a: '$$'}, {a: 1}, err => {
+      assert(err && err.toString().match(/invalid sql/))
+      next()
+    })
+  },
+  (next) => {
+    conn.delete('table1', {a: '$'}, err => {
+      assert(err && err.toString().match(/invalid sql/))
+      next()
+    })
+  },
+  (next) => {
+    conn.select('table1','*', {a: undefined}, next)
+  },
+  (rows, info, next) => {
+    assert.equal(rows.length, 2)
+    conn.release()
+    done()
+  },
+  ], function(err) {
+    throw err
+  })
+})
 })
 
 const assert = require('assert')
