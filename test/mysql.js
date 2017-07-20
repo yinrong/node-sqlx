@@ -304,10 +304,71 @@ it('selectEx test', (done) => {
     assert.equal(rows.length, 3)
     conn.selectEx(
       'table1',
-      'select * from table1 left join tableX on table1.a = tableX.a',next)
+      'select * from table1 left join tableX on table1.a = tableX.a', next)
   },
   (rows, info, next) => {
     assert.equal(rows.length, 5)
+    conn.release()
+    done()
+  },
+  ], function(err) {
+    throw err
+  })
+})
+
+it('params secure test', done => {
+  const client = sqlx.createClient()
+  client.define('*', MYSQL_CONFIG_1)
+  const conn = client.getConnection(OPERATER_INFO_1)
+
+  async.waterfall([
+  (next) => {
+    conn.insert('table1', [{a: '()'}], err => {
+      assert(err && err.toString().match(/invalid sql/))
+      next()
+    })
+  },
+  (next) => {
+    conn.insert('table1', [{a: 1},{a:2}], next)
+  },
+  (rows, info, next) => {
+    conn.select('table1', '*', {a: {$in: [1, 2]}}, next)
+  },
+  (rows, info, next) => {
+    assert.equal(rows.length, 2)
+    next()
+  },
+  (next) => {
+    conn.update('table1', {a: '105 OR 1=1'}, {a: 1}, err => {
+      assert(err && err.toString().match(/invalid sql/))
+      next()
+    })
+  },
+  (next) => {
+    conn.delete('table1', {a: '$'}, err => {
+      assert(err && err.toString().match(/invalid sql/))
+      next()
+    })
+  },
+  (next) => {
+    conn.select('table1','*', {a: undefined}, err => {
+      assert(err && err.toString().match(/invalid sql/))
+      next()
+    })
+  },
+  (next) => {
+    conn.selectEx('table1', 'select * from table1 where a = ?; delete from table1', [1], err => {
+      assert(err && err.toString().match(/error in your SQL syntax/))
+      next()
+    })
+  },
+  (next) => {
+    conn.selectEx('table1', 'select * from table1 where a = ?', err => {
+      assert(err && err.toString().match(/error in your SQL syntax/))
+      next()
+    })
+  },
+  (next) => {
     conn.release()
     done()
   },
