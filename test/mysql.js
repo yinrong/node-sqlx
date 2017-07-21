@@ -402,4 +402,3 @@ const OPERATER_INFO_1 = {
     user: '101,23',
     actions: '*',
   }
-
