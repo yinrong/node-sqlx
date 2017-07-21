@@ -1,6 +1,6 @@
 {
   "name": "sqlx",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "database driver with extended features like mysql changelog/oplog, connection auto release.",
   "main": "index.js",
   "directories": {
