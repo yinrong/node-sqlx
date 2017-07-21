@@ -345,6 +345,17 @@ it('params secure test', done => {
     })
   },
   (next) => {
+    conn.update('table1', {a: 0}, {a: 1}, next)
+  },
+  (rows, info, next) => {
+    conn.select('table1', '*', {a: 0}, next)
+  },
+  (rows, info, next) => {
+    assert.equal(rows.length, 1)
+    assert.equal(rows[0].a, 0)
+    next()
+  },
+  (next) => {
     conn.delete('table1', {a: '$'}, err => {
       assert(err && err.toString().match(/invalid sql/))
       next()
