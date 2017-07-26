@@ -323,12 +323,18 @@ it('params secure test', done => {
 
   async.waterfall([
   (next) => {
-    conn.insert('table1', [{a: 'and'}], err => {
+    conn.insert('table1', [{a: ' and '}], err => {
       assert(err && err.toString().match(/invalid sql/))
       next()
     })
   },
   (next) => {
+    conn.insert('table1', {a: 'land'}, next)
+  },
+  (rows, info, next) => {
+    conn.delete('table1', {a: 'land'}, next)
+  },
+  (rows, info, next) => {
     conn.insert('table1', [{a: 1},{a:2}], next)
   },
   (rows, info, next) => {
