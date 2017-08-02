@@ -2,7 +2,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [sqlx](#sqlx)
+- [Usage](#usage)
   - [database list](#database-list)
   - [feature list](#feature-list)
   - [interface](#interface)
@@ -13,11 +13,11 @@
     - [where](#where)
   - [mysql](#mysql)
     - [extend](#extend)
+- [Development](#development)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-sqlx
-=========
+# Usage
 database driver with extended features.
 
 ## database list
@@ -222,3 +222,11 @@ var config_with_extend = {
 ```
 
 
+# Development
+
+```
+git clone https://github.com/yinrong/node-sqlx.git
+cd node-sqlx
+npm i
+npm test
+```
