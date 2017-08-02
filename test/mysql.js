@@ -329,10 +329,10 @@ it('params secure test', done => {
     })
   },
   (next) => {
-    conn.insert('table1', {a: 'land'}, next)
+    conn.insert('table1', {c: 'land'}, next)
   },
   (rows, info, next) => {
-    conn.delete('table1', {a: 'land'}, next)
+    conn.delete('table1', {c: 'land'}, next)
   },
   (rows, info, next) => {
     conn.insert('table1', [{a: 1},{a:2}], next)
