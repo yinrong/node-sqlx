@@ -22,6 +22,7 @@ database driver with extended features.
 
 ## database list
 * mysql
+* redis
 * define custom function to use any database or service
 
 ## feature list
@@ -94,6 +95,14 @@ var config2 = {
       password: '',
     },
   }
+
+var config2 = {
+  type: 'redis',
+  config: {
+    host: '127.0.0.1',
+    port: '6379'
+  },
+}
 
 const InterfaceOne = {
 
