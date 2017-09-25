@@ -119,8 +119,8 @@ it('where in update', function(done) {
     conn.update('table1', {b:1}, {a:3}, next)
   },
   function(result, info, next) {
-    assert.equal(result.affectedRows, 2)
-    assert.equal(result.changedRows, 2)
+    assert.equal(result.affected_rows, 2)
+    assert.equal(result.changed_rows, 2)
     conn.select('table1', '*', {a:3}, next)
   },
   function(rows, info, next) {
@@ -156,7 +156,7 @@ it('where in delete', function(done) {
     conn.delete('table1', {a:3}, next)
   },
   function(result, info, next) {
-    assert.equal(result.affectedRows, 2)
+    assert.equal(result.affected_rows, 2)
     conn.release()
     done()
   },
