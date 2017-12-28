@@ -1,13 +1,13 @@
 {
   "name": "sqlx",
-  "version": "3.0.2",
-  "description": "database driver with extended features like mysql changelog/oplog, connection auto release.",
+  "version": "4.0.0",
+  "description": "Database driver with extended features like mysql changelog/oplog, connection auto release.",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "istanbul cover --dir .cov _mocha test; echo .cov/lcov-report/index.html"
+    "test": "nyc ./node_modules/.bin/_mocha; echo .cov/index.html"
   },
   "repository": {
     "type": "git",
@@ -35,6 +35,26 @@
     "redis": "^2.8.0"
   },
   "devDependencies": {
-    "lodash": "^4.15.0"
+    "coveralls": "^3.0.0",
+    "lodash": "^4.15.0",
+    "mocha": "^3.5.3",
+    "nyc": "^11.4.1"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "report-dir": "./.cov",
+    "include": [
+      "$/*.js",
+      "lib/*.js",
+      "lib/**/*.js"
+    ],
+    "extension": [
+      ".js"
+    ],
+    "reporter": [
+      "html",
+      "text-summary"
+    ],
+    "all": true
   }
 }

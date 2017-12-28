@@ -1,3 +1,13 @@
+# SQLX
+
+> Database driver with extended features like mysql changelog/oplog, connection auto release.
+
+[![NPM version][npm-image]][npm-url]
+[![Build status][travis-image]][travis-url]
+[![Coverage Status][coveralls-image]][coveralls-url]
+[![License][license-image]][license-url]
+[![Downloads][downloads-image]][downloads-url]
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
@@ -59,10 +69,21 @@ var operator_info = {
 }
 const conn = client.getConnection(operator_info)
 
+// callback
 conn.insert('table7', {a:1, b:2}, function(err, rows, info) {
   if (err) throw err
   console.log(rows, info)
 })
+
+// Promise/async/await
+let result
+try {
+  result = await conn.insert('table7', {a:1, b:2})
+  console.log(result.rows)  // rows
+  console.log(result.info)  // info
+} catch (err) {
+  throw err
+}
 
 ```
 
@@ -157,6 +178,7 @@ const InterfaceTwo = {
 
 ### method
 ```javascript
+// callback
 conn.selectEx(
   /* table */ 'table0',
   /* custom sql */ 'select ... join ...where field1 = ? and field2 = ?',
@@ -196,6 +218,19 @@ conn.delete(
   /* where */ {field1: 10},
   function(err, rows, info) {
   })
+
+// Promise/async/await
+let result
+try {
+  result = await conn.insert(
+    /* table */ 'table0',
+    /* set   */ {field1: 20})
+  console.log(result.rows)  // rows
+  console.log(result.info)  // info
+} catch (err) {
+  throw err
+}
+// other functions also works.
 ```
 
 
@@ -239,3 +274,15 @@ cd node-sqlx
 npm i
 npm test
 ```
+
+
+[npm-image]: https://img.shields.io/npm/v/sqlx.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/sqlx
+[travis-image]: https://img.shields.io/travis/yinrong/node-sqlx/master.svg?style=flat-square
+[travis-url]: https://travis-ci.org/yinrong/node-sqlx
+[license-image]: http://img.shields.io/npm/l/sqlx.svg?style=flat-square
+[license-url]: LICENSE
+[downloads-image]: http://img.shields.io/npm/dm/sqlx.svg?style=flat-square
+[downloads-url]: https://npmjs.org/package/sqlx
+[coveralls-image]: https://img.shields.io/coveralls/github/yinrong/node-sqlx/master.svg?style=flat-square
+[coveralls-url]: https://coveralls.io/github/yinrong/node-sqlx

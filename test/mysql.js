@@ -165,6 +165,7 @@ it('where in delete', function(done) {
   })
 })
 
+
 it('release', (done) => {
   const client = sqlx.createClient()
   client.define('*', MYSQL_CONFIG_1)
