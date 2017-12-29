@@ -15,6 +15,7 @@
 - [Usage](#usage)
   - [database list](#database-list)
   - [feature list](#feature-list)
+  - [api support](#api-support)
   - [interface](#interface)
     - [overall](#overall)
     - [action whitelist: operator_info.actions](#action-whitelist-operator_infoactions)
@@ -32,12 +33,25 @@ database driver with extended features.
 
 ## database list
 * mysql
+* mongodb
 * redis
 * define custom function to use any database or service
 
 ## feature list
 * changelog/oplog
 * auto release timeout connection
+
+## api support
+
+|  Method  | MySQL  | MongoDB | Redis |
+| :------- |:------:| :------:| :----:|
+| select   |   √    |    √    |   √   |
+| selectEx |   √    |    ×    |   ×   |
+| insert   |   √    |    √    |   √   |
+| update   |   √    |    √    |   √   |
+| delete   |   √    |    √    |   √   |
+| find     |   ×    |    √    |   ×   |
+| aggregate|   ×    |    √    |   ×   |
 
 ## interface
 
@@ -179,7 +193,7 @@ const InterfaceTwo = {
 ### method
 ```javascript
 // callback
-conn.selectEx(
+conn.selectEx(    // mysql only
   /* table */ 'table0',
   /* custom sql */ 'select ... join ...where field1 = ? and field2 = ?',
   /* where */ [1,2]
@@ -216,6 +230,23 @@ conn.select(
 conn.delete(
   /* table */ 'table4',
   /* where */ {field1: 10},
+  function(err, rows, info) {
+  })
+
+conn.find(        // mongodb only
+  /* table */ 'table5',
+  /* opt   */ {fields: ['field1'], skip: 10, sort: 'field1'},
+  /* where */ {field1: 10},
+  function(err, rows, info) {
+  })
+
+conn.aggregate(   // mongodb only
+  /* table */ 'table5',
+  /* opt   */ {skip: 10, sort: 'name'},
+  /* pipe  */ [
+                {$match: {field1: {$regex: /[a-z]*/}}},
+                {$sort:  {field1: -1}},
+              ]
   function(err, rows, info) {
   })
 

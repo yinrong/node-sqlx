@@ -33,6 +33,33 @@ it('mysql async/await', async () => {
   conn.release()
 })
 
+it('mongodb async/await', async () => {
+  const client = sqlx.createClient()
+  client.define('*', {type: 'mongodb', config: MONGODB_CONFIG})
+  const conn = client.getConnection(OPERATER_INFO)
+  // insert
+  result = await conn.insert('table1', {a: 1})
+  assert.equal(result.rows.affected_rows, 1)
+  // select
+  result = await conn.select('table1', '*', {a: 1})
+  assert.equal(result.rows[0].a, 1)
+  // find
+  result = await conn.find('table1', {limit: 1}, {a: 1})
+  assert.equal(result.rows[0].a, 1)
+  // aggregate
+  result = await conn.aggregate(
+    'table1', 
+    {limit: 1}, 
+    [{$match: {a: 1}}, {$sort: {a: 1}}])
+  assert.equal(result.rows[0].a, 1)
+  // update
+  result = await conn.update('table1', {a: 2}, {a: 1})
+  assert(result.rows.affected_rows)
+  // delete
+  result = await conn.delete('table1', {a:2})
+  assert(result.rows.affected_rows)
+})
+
 it('redis async/await', async () => {
   const client = sqlx.createClient()
   client.define('budget', {type: 'redis', config: REDIS_CONIFG})
@@ -77,6 +104,11 @@ const MYSQL_CONFIG_1 = {
     //debug: ['ComQueryPacket'],
     database: 'sqlx_mysql',
   } }
+
+// mongodb
+const MONGODB_CONFIG = {
+  url: 'mongodb://localhost:27017/test?maxPoolSize=30',
+}
 
 // redis
 const REDIS_CONIFG = {
