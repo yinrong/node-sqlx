@@ -1,6 +1,6 @@
 {
   "name": "sqlx",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "description": "Database driver with extended features like mysql changelog/oplog, connection auto release.",
   "main": "index.js",
   "directories": {
@@ -30,6 +30,7 @@
   "dependencies": {
     "async": "^2.0.1",
     "debug": "^2.2.0",
+    "lodash": "^4.17.4",
     "mongo-sql": "^2.7.5",
     "monk": "^6.0.5",
     "mysql": "^2.11.1",
@@ -37,7 +38,6 @@
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
-    "lodash": "^4.15.0",
     "mocha": "^3.5.3",
     "nyc": "^11.4.1"
   },
