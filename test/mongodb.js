@@ -137,7 +137,7 @@ it('delete', done => {
   ], err => {throw err})
 })
 
-it('error', done => {
+it('error-authority', done => {
   const client = sqlx.createClient()
   try {
     client.define('table1', {type: 'mongodb', config: {uri: 'supposed be url'}})
@@ -187,6 +187,56 @@ it('error', done => {
   (next) => {
     conn.release()
     done()
+  }
+  ], err => {throw err})
+})
+
+it('error-operations', done => {
+  const client = sqlx.createClient()
+  client.define('*', DBCONFIG_RW)
+  const conn = client.getConnection(OPCONFIG)
+  async.waterfall([
+  // insert with wrong 'sets'
+  (next) => {
+    conn.insert('error', [0], err => {
+      assert(err)
+      next()
+    })
+  },
+  // update with wrong 'sets' and 'where'
+  (next) => {
+    conn.update('error', [0], [1], err => {
+      assert(err)
+      next()
+    })
+  },
+  // delete with wrong 'where'
+  (next) => {
+    conn.delete('error', [0], err => {
+      assert(err)
+      next()
+    })
+  },
+  // select with wrong 'options' and 'where'
+  (next) => {
+    conn.select('error', [0], [0], err => {
+      assert(err)
+      next()
+    })
+  },
+  // find with wrong 'options' and 'where'
+  (next) => {
+    conn.find('error', [0], [0], err => {
+      assert(err)
+      next()
+    })
+  },
+  // aggregate with wrong 'options' and 'pipeline'
+  (next) => {
+    conn.aggregate('error', [0], [0], err => {
+      assert(err)
+      done()
+    })
   }
   ], err => {throw err})
 })
