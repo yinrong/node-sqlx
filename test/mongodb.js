@@ -241,6 +241,43 @@ it('error-operations', done => {
   ], err => {throw err})
 })
 
+it('extend', done => {
+  const client = sqlx.createClient()
+  let config = _.cloneDeep(DBCONFIG_RW)
+  let extend_method_called = 0
+  config.extend = {
+    insert: function(...args) {
+      extend_method_called++
+      this.constructor.prototype.insert.apply(this, args)
+    },
+    find: function(...args) {
+      extend_method_called++
+      this.constructor.prototype.find.apply(this, args)
+    },
+    asyncTest: async() => {
+      extend_method_called++
+      await promiseDelay(3000)
+      return
+    }
+  }
+  client.define('*', config)
+  const conn = client.getConnection(OPCONFIG)
+  async.waterfall([
+  (next) => {
+    conn.insert('table2', {a: 1}, next)
+  },
+  (rows, info, next) => {
+    assert.equal(extend_method_called, 1)
+    conn.find('table2', {}, {a: 1}, next)
+  },
+  (rows, info, next) => {
+    assert.equal(rows[0].a, 1)
+    assert.equal(extend_method_called, 2)
+    done()
+  }
+  ], err => {throw err})
+})
+
 })
 
 const DBCONFIG_RW = {
