@@ -35,7 +35,7 @@ it('mysql async/await', async () => {
 
 it('mongodb async/await', async () => {
   const client = sqlx.createClient()
-  client.define('*', {type: 'mongodb', config: MONGODB_CONFIG})
+  client.define('*', MONGODB_CONFIG)
   const conn = client.getConnection(OPERATER_INFO)
   // insert
   result = await conn.insert('table1', {a: 1})
@@ -84,6 +84,42 @@ it('redis async/await', async () => {
   assert.equal(result.rows, null)
   conn.release()
 })
+
+it('extend promise', async () => {
+  const client = sqlx.createClient()
+  let config = _.cloneDeep(MONGODB_CONFIG)
+  let extend_method_called = 0
+  config.extend = {
+    insert: function(...args) {
+      let table = args[0]
+      if (table === 'wrong') {
+        throw new Error('table can not be wrong! -- test')
+      }
+      extend_method_called++
+      this.constructor.prototype.insert.apply(this, args)
+    },
+    find: async function(...args) {
+      extend_method_called++
+      this.constructor.prototype.find.apply(this, args)
+    },
+  }
+  client.define('*', config)
+  const conn = client.getConnection(OPERATER_INFO)
+  let result
+  try {
+    await conn.insert('wrong', {wrong: 1})
+  } catch (err) {
+    console.log(err.message)
+    assert(err.message.match(/wrong/))
+    assert.equal(extend_method_called, 0)
+  }
+  result = await conn.insert('table1', {promise: 1})
+  assert.equal(extend_method_called, 1)
+  assert.equal(result.rows.affected_rows, 1)
+  result = await conn.find('table1', {}, {promise: 1})
+  assert.equal(extend_method_called, 2)
+  assert.equal(result.rows[0].promise, 1)
+})
 })
 
 
@@ -107,7 +143,10 @@ const MYSQL_CONFIG_1 = {
 
 // mongodb
 const MONGODB_CONFIG = {
-  url: 'mongodb://localhost:27017/test?maxPoolSize=30',
+  type: 'mongodb',
+  config: {
+    url: 'mongodb://localhost:27017/test?maxPoolSize=30',
+  }
 }
 
 // redis

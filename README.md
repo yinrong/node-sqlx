@@ -12,6 +12,9 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+- [Demo](#demo)
+  - [async/await](#asyncawait)
+  - [callback](#callback)
 - [Usage](#usage)
   - [database list](#database-list)
   - [feature list](#feature-list)
@@ -22,11 +25,60 @@
     - [config_or_interface](#config_or_interface)
     - [method](#method)
     - [where](#where)
-  - [mysql](#mysql)
-    - [extend](#extend)
+  - [extend](#extend)
+    - [mysql](#mysql)
+    - [mongodb](#mongodb)
 - [Development](#development)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+# Demo
+
+## async/await
+```js
+// init
+const client = sqlx.createClient()
+const DB_CONFIG = {
+  type: 'mongodb',
+  config: {
+    url: 'mongodb://localhost:27017/test?maxPoolSize=30'
+  },
+  extend: {
+    find: function(...args) {
+      let table = args[0]
+      if (table !== 'test') {
+        throw new Error('Invalid table!')
+      }
+      this.constructor.prototype.find.apply(this, args)
+    }
+  }
+}
+const USER_CONFIG = {
+  user: 'root',
+  actions: '*'
+}
+client.define('test', DB_CONFIG)
+const conn = client.getConnection(USER_CONFIG)
+
+// catch error
+try {
+  await conn.find('not-test', {limit: 1}, {fileds_1: 'context'})
+} catch (err) {
+  assert(err.message.match(/Invalid table/))
+}
+
+// usage
+let doc = {fields_1: 'hello'}
+let result = await conn.insert('test', doc)
+assert.equal(result.affected_rows, 1)
+assert.equal(result.docs[0].fields_1, 'hello')
+
+result = await conn.find('test', {fields_1: 'hello'})
+assert.equal(result.rows[0].fields_1, 'hello')
+```
+
+## callback
+the demo is in the following documents.
 
 # Usage
 database driver with extended features.
@@ -274,10 +326,10 @@ where is mongo-like JSON object, examples:
 ```
 
 
-## mysql
-### extend
+## extend
+### mysql
 ```js
-var config_with_extend = {
+let config_with_extend = {
     type: 'mysql',
     config: {
       host: '1.1.1.1',
@@ -288,12 +340,30 @@ var config_with_extend = {
     extend: {
       insert: function(table, sets, callback) {
         if (sets === undefined) {
-          return new Error('find some error before call sqlx')
+          return callback(new Error('find some error before call sqlx'))
         }
-        this.constructor.prototype.insert.apply(this, arguments)
+        this.constructor.prototype.insert.apply(this, args)
       },
     },
   }
+```
+
+### mongodb
+```js
+let config_with_extend = {
+  type: 'mongodb',
+  config: {
+    url: 'mongodb://localhost:27017/test?maxPoolSize=30',
+  },
+  extend: {
+    find: function(...args) {
+      if (where === undefined) {
+        throw new Error('find some error before call sqlx')
+      }
+      this.constructor.prototype.find.apply(this, args)
+    }
+  }
+}
 ```
 
 
