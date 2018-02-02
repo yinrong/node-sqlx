@@ -9,3 +9,9 @@ services:
   - redis
 after_success: 
   - nyc report --reporter=text-lcov | coveralls
+deploy:
+  provider: npm
+  email: yr0319@126.com
+  api_key: 438c9fe0-e2d6-4e7e-8559-ad7c8eed53a2
+  on:
+    branch: master

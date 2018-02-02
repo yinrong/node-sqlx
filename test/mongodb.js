@@ -60,6 +60,22 @@ it('insert', done => {
   ], err => {throw err})
 })
 
+it('count', done => {
+  const client = sqlx.createClient()
+  client.define('*', DBCONFIG_RW)
+  const conn = client.getConnection(OPCONFIG)
+  async.waterfall([
+  (next) => {
+    conn.count('table1', {
+      limit: 1,
+    }, {title: {$regex: /test/}}, next)
+  },
+  (rows, info, next) => {
+    done()
+  }
+  ], err => {throw err})
+})
+
 it('find', done => {
   const client = sqlx.createClient()
   client.define('*', DBCONFIG_RW)
@@ -74,6 +90,21 @@ it('find', done => {
   },
   (rows, info, next) => {
     assert.equal(rows[0].title, 'test2')
+    done()
+  }
+  ], err => {throw err})
+})
+
+it('findOneAndUpdate', done => {
+  const client = sqlx.createClient()
+  client.define('*', DBCONFIG_RW)
+  const conn = client.getConnection(OPCONFIG)
+  async.waterfall([
+  (next) => {
+    conn.findOneAndUpdate('table1', {title: 'test3'}, {title: 'test2'}, next)
+  },
+  (rows, info, next) => {
+    assert.equal(rows.title, 'test3')
     done()
   }
   ], err => {throw err})
@@ -174,13 +205,13 @@ it('error-authority', done => {
   },
   (next) => {
     conn.insert('table1', 'error insert', err => {
-      assert(err.message.match(/invalid sets/))
+      assert(err.message.match(/sets should be object,array/))
       next()
     })
   },
   (next) => {
     conn.update('table1', 'error update', {}, err => {
-      assert(err.message.match(/invalid sets/))
+      assert(err.message.match(/sets should be object,array/))
       next()
     })
   },
@@ -196,6 +227,12 @@ it('error-operations', done => {
   client.define('*', DBCONFIG_RW)
   const conn = client.getConnection(OPCONFIG)
   async.waterfall([
+  (next) => {
+    conn.insert('error', undefined, err => {
+      assert(err.message.match(/Missing/))
+      next()
+    })
+  },
   // insert with wrong 'sets'
   (next) => {
     conn.insert('error', [0], err => {
@@ -234,6 +271,18 @@ it('error-operations', done => {
   // aggregate with wrong 'options' and 'pipeline'
   (next) => {
     conn.aggregate('error', [0], [0], err => {
+      assert(err)
+      next()
+    })
+  },
+  (next) => {
+    conn.count('error', [0], [0], err => {
+      assert(err)
+      next()
+    })
+  },
+  (next) => {
+    conn.findOneAndUpdate('error', [0], [0], err => {
       assert(err)
       done()
     })

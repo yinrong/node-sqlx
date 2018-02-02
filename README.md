@@ -92,18 +92,21 @@ database driver with extended features.
 ## feature list
 * changelog/oplog
 * auto release timeout connection
+* read-write access control
 
 ## api support
 
-|  Method  | MySQL  | MongoDB | Redis |
-| :------- |:------:| :------:| :----:|
-| select   |   √    |    √    |   √   |
-| selectEx |   √    |    ×    |   ×   |
-| insert   |   √    |    √    |   √   |
-| update   |   √    |    √    |   √   |
-| delete   |   √    |    √    |   √   |
-| find     |   ×    |    √    |   ×   |
-| aggregate|   ×    |    √    |   ×   |
+|     Method      | MySQL  | MongoDB | Redis |
+| :-------        |:------:| :------:| :----:|
+| select          |   √    |    √    |   √   |
+| selectEx        |   √    |    ×    |   ×   |
+| insert          |   √    |    √    |   √   |
+| update          |   √    |    √    |   √   |
+| delete          |   √    |    √    |   √   |
+| find            |   ×    |    √    |   ×   |
+| aggregate       |   ×    |    √    |   ×   |
+| count           |   ×    |    √    |   ×   |
+| findOneAndUpdate|   ×    |    √    |   ×   |
 
 ## interface
 
@@ -285,14 +288,14 @@ conn.delete(
   function(err, rows, info) {
   })
 
-conn.find(        // mongodb only
+conn.find(              // mongodb only
   /* table */ 'table5',
   /* opt   */ {fields: ['field1'], skip: 10, sort: 'field1'},
   /* where */ {field1: 10},
   function(err, rows, info) {
   })
 
-conn.aggregate(   // mongodb only
+conn.aggregate(         // mongodb only
   /* table */ 'table5',
   /* opt   */ {skip: 10, sort: 'name'},
   /* pipe  */ [
@@ -301,6 +304,21 @@ conn.aggregate(   // mongodb only
               ]
   function(err, rows, info) {
   })
+
+conn.count(         // mongodb only
+  /* table */ 'table5',
+  /* opt   */ {skip: 10, limit: 50},
+  /* where */ {field1: 10},
+  function(err, rows, info) {
+  })
+
+conn.findOneAndUpdate(   // mongodb only
+  /* table */ 'table5',
+  /* sets  */ {field1: 20},
+  /* where */ {field1: 10},
+  function(err, rows, info) {
+  })
+
 
 // Promise/async/await
 let result

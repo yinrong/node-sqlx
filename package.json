@@ -1,6 +1,6 @@
 {
   "name": "sqlx",
-  "version": "4.2.0",
+  "version": "4.3.0",
   "description": "Database driver with extended features like mysql changelog/oplog, connection auto release.",
   "main": "index.js",
   "directories": {
@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/yinrong/node-sqlx#readme",
   "dependencies": {
+    "ajv": "^6.1.1",
     "async": "^2.0.1",
     "debug": "^2.2.0",
     "lodash": "^4.17.4",
@@ -57,5 +58,8 @@
       "text-summary"
     ],
     "all": true
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
