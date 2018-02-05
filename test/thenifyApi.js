@@ -109,7 +109,6 @@ it('extend promise', async () => {
   try {
     await conn.insert('wrong', {wrong: 1})
   } catch (err) {
-    console.log(err.message)
     assert(err.message.match(/wrong/))
     assert.equal(extend_method_called, 0)
   }
@@ -120,6 +119,17 @@ it('extend promise', async () => {
   assert.equal(extend_method_called, 2)
   assert.equal(result.rows[0].promise, 1)
 })
+})
+
+it('reject promise', async () => {
+  const client = sqlx.createClient()
+  client.define('table1', MONGODB_CONFIG)
+  const conn = client.getConnection(OPERATER_INFO)
+  try {
+    await conn.insert('wrong', {a: 1})
+  } catch (err) {
+    assert(err.message.match(/wrong is not defined/))
+  }
 })
 
 
