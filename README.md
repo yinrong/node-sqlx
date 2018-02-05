@@ -314,6 +314,7 @@ conn.count(         // mongodb only
 
 conn.findOneAndUpdate(   // mongodb only
   /* table */ 'table5',
+  /* opt   */ {skip: 10},
   /* sets  */ {field1: 20},
   /* where */ {field1: 10},
   function(err, rows, info) {

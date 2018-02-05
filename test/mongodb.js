@@ -101,7 +101,7 @@ it('findOneAndUpdate', done => {
   const conn = client.getConnection(OPCONFIG)
   async.waterfall([
   (next) => {
-    conn.findOneAndUpdate('table1', {title: 'test3'}, {title: 'test2'}, next)
+    conn.findOneAndUpdate('table1', {}, {title: 'test3'}, {title: 'test2'}, next)
   },
   (rows, info, next) => {
     assert.equal(rows.title, 'test3')
@@ -135,11 +135,18 @@ it('update', done => {
   const conn = client.getConnection(OPCONFIG)
   async.waterfall([
   (next) => {
-    conn.update('table1', {content: 'updated'}, {title: {$regex: /test/}}, next)
+    const content = {content: 'updated'}
+    conn.update('table1', content, {title: {$regex: /test/}}, next)
   },
   (rows, info, next) => {
     assert.equal(rows.affected_rows, 3)
     assert.equal(rows.changed_rows, 3)
+    const content = {$set: {content: 'updated'}}
+    conn.update('table1', content, {title: {$regex: /test/}}, next)
+  },
+  (rows, info, next) => {
+    assert.equal(rows.affected_rows, 3)
+    assert.equal(rows.changed_rows, 0)
     conn.select('table1', '*', {content: 'updated'}, next)
   },
   (rows, info, next) => {
@@ -282,7 +289,7 @@ it('error-operations', done => {
     })
   },
   (next) => {
-    conn.findOneAndUpdate('error', [0], [0], err => {
+    conn.findOneAndUpdate('error', [0], [0], [0], err => {
       assert(err)
       done()
     })
